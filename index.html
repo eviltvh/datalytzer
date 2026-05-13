@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DATALITZER // LITE</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,700;1,400&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <h1>DATALITZER <span>// Lite</span></h1>
+    <div class="sub">[estadistica descriptiva] -> columna: profile_ratio -> -bynd</div>
+  </div>
+  <div class="chip">SNCTVM TOOLS</div>
+</div>
+
+<div id="zonaSubida">
+  <div class="drop-box" id="dropBox">
+    <span class="icono">↓</span>
+    <div class="texto">Suelta tu <strong>stats.csv</strong> aqui</div>
+    <div class="pista">click para seleccionar · generado con gen_stats.py</div>
+    <input type="file" id="inputArchivo" accept=".csv">
+  </div>
+</div>
+
+<div id="dashboard">
+  <button class="btn-reset" id="btnReset">← cargar otro archivo</button>
+
+  <div class="seccion">[TENDENCIA CENTRAL — profile_ratio]</div>
+  <div class="stats" id="stats"></div>
+
+  <div class="seccion">[TABLA DE FRECUENCIAS]</div>
+  <div class="tarjeta grafica-full tabla-wrap">
+    <h3><span class="badge neon">TABLA</span> FRECUENCIAS COMPLETA</h3>
+    <div id="tablaFrec"></div>
+  </div>
+
+  <div class="seccion">[FRECUENCIAS ABSOLUTAS]</div>
+  <div class="tarjeta grafica-full">
+    <h3><span class="badge neon">FA</span> GRAFICA DE BARRAS</h3>
+    <div class="canvas-wrap"><canvas id="grafBarras"></canvas></div>
+  </div>
+
+  <div class="seccion">[FRECUENCIAS RELATIVAS]</div>
+  <div class="tarjeta grafica-full">
+    <h3><span class="badge rosa">FR</span> GRAFICA DE PASTEL</h3>
+    <div class="canvas-pie"><canvas id="grafPastel"></canvas></div>
+  </div>
+
+  <div class="seccion">[POLIGONOS DE FRECUENCIA]</div>
+  <div class="grafica-grid">
+    <div class="tarjeta">
+      <h3><span class="badge neon">ABS</span> FRECUENCIAS ABSOLUTAS</h3>
+      <div class="canvas-wrap"><canvas id="grafPoliAbs"></canvas></div>
+    </div>
+    <div class="tarjeta">
+      <h3><span class="badge azul">ACUM</span> FRECUENCIAS ACUMULADAS</h3>
+      <div class="canvas-wrap"><canvas id="grafPoliAcum"></canvas></div>
+    </div>
+  </div>
+
+  <div class="footer">DATALITZER LITE · SNCTVM TOOLS · -bynd</div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
