@@ -19,7 +19,7 @@ function procesarArchivo(archivo) {
   const lector = new FileReader();
   lector.onload = (e) => {
     const datos = leerCSV(e.target.result);
-    if (!datos.length) { alert('No se encontro la columna profile_ratio o no hay datos validos'); return; }
+    if (!datos.length) { alert('No se encontro la columna profile_followers o no hay datos validos'); return; }
     mostrarDashboard(datos);
   };
   lector.readAsText(archivo);
@@ -29,16 +29,16 @@ function leerCSV(texto) {
   const lineas      = texto.trim().split('\n');
   if (lineas.length < 2) return [];
   const encabezados = lineas[0].split(',').map(h => h.trim());
-  const idxRatio    = encabezados.indexOf('profile_ratio');
-  const idxStatus   = encabezados.indexOf('status');
-  if (idxRatio === -1) return [];
+  const idxFollowers = encabezados.indexOf('profile_followers');
+  const idxStatus    = encabezados.indexOf('status');
+  if (idxFollowers === -1) return [];
 
   const valores = [];
   for (let i = 1; i < lineas.length; i++) {
     const celdas = lineas[i].split(',');
     if (idxStatus !== -1 && celdas[idxStatus]?.trim() === 'self') continue;
-    const numero = parseFloat(celdas[idxRatio]);
-    if (!isNaN(numero) && numero > 0) valores.push(numero);
+    const numero = parseInt(celdas[idxFollowers]);
+    if (!isNaN(numero) && numero >= 0) valores.push(numero);
   }
   return valores;
 }
@@ -84,8 +84,8 @@ function construirTabla(valores) {
     acumRel += fr;
 
     filas.push({
-      clase:      `[${lo.toFixed(3)}, ${hi.toFixed(3)}${esUltimo ? ']' : ')'}`,
-      marcaClase: (lo + hi) / 2,
+      clase:      `[${Math.round(lo)}, ${Math.round(hi)}${esUltimo ? ']' : ')'}`,
+      marcaClase: Math.round((lo + hi) / 2),
       fa, fr,
       frPct:      fr * 100,
       acumAbs, acumRel,
@@ -103,18 +103,18 @@ function mostrarDashboard(valores) {
   document.getElementById('dashboard').style.display  = 'block';
 
   const modasTexto = st.modas.length > 5
-    ? st.modas.slice(0, 4).map(m => m.toFixed(3)).join(', ') + '...'
-    : st.modas.map(m => m.toFixed(3)).join(', ');
+    ? st.modas.slice(0, 4).map(m => m.toLocaleString()).join(', ') + '...'
+    : st.modas.map(m => m.toLocaleString()).join(', ');
 
   document.getElementById('stats').innerHTML = [
-    { etiqueta: 'N',          valor: st.n,                    clase: 'negro' },
-    { etiqueta: 'Media',      valor: st.media.toFixed(4),     clase: 'neon'  },
-    { etiqueta: 'Mediana',    valor: st.mediana.toFixed(4),   clase: 'azul'  },
-    { etiqueta: 'Moda',       valor: modasTexto,              clase: 'rosa'  },
-    { etiqueta: 'Minimo',     valor: st.min.toFixed(4),       clase: 'negro' },
-    { etiqueta: 'Maximo',     valor: st.max.toFixed(4),       clase: 'negro' },
-    { etiqueta: 'Rango',      valor: st.rango.toFixed(4),     clase: 'negro' },
-    { etiqueta: 'Desv. Est.', valor: st.desviacion.toFixed(4),clase: 'azul'  },
+    { etiqueta: 'N',          valor: st.n.toLocaleString(),               clase: 'negro' },
+    { etiqueta: 'Media',      valor: Math.round(st.media).toLocaleString(), clase: 'neon'  },
+    { etiqueta: 'Mediana',    valor: st.mediana.toLocaleString(),          clase: 'azul'  },
+    { etiqueta: 'Moda',       valor: modasTexto,                           clase: 'rosa'  },
+    { etiqueta: 'Minimo',     valor: st.min.toLocaleString(),              clase: 'negro' },
+    { etiqueta: 'Maximo',     valor: st.max.toLocaleString(),              clase: 'negro' },
+    { etiqueta: 'Rango',      valor: st.rango.toLocaleString(),            clase: 'negro' },
+    { etiqueta: 'Desv. Est.', valor: Math.round(st.desviacion).toLocaleString(), clase: 'azul' },
   ].map(s => `
     <div class="stat ${s.clase}">
       <div class="etiqueta">${s.etiqueta}</div>
@@ -126,7 +126,7 @@ function mostrarDashboard(valores) {
   let html = `
     <table>
       <tr>
-        <th>Clase</th><th>Marca de clase</th><th>fa</th><th>Barra fa</th>
+        <th>Clase (followers)</th><th>Marca de clase</th><th>fa</th><th>Barra fa</th>
         <th>fr</th><th>fr %</th><th>Fa (acum)</th><th>Barra Fa</th><th>Fr % (acum)</th>
       </tr>`;
 
@@ -136,7 +136,7 @@ function mostrarDashboard(valores) {
     html += `
       <tr>
         <td>${f.clase}</td>
-        <td class="num">${f.marcaClase.toFixed(3)}</td>
+        <td class="num">${f.marcaClase.toLocaleString()}</td>
         <td class="num">${f.fa}</td>
         <td><div class="barra"><div class="barra-fill" style="width:${wFa}%"></div></div></td>
         <td>${f.fr.toFixed(4)}</td>
@@ -160,7 +160,7 @@ function mostrarDashboard(valores) {
   document.getElementById('tablaFrec').innerHTML = html;
 
   const etiquetas = filas.map(f => f.clase);
-  const marcas    = filas.map(f => parseFloat(f.marcaClase.toFixed(3)));
+  const marcas    = filas.map(f => f.marcaClase);
   const fasAbs    = filas.map(f => f.fa);
   const fasPct    = filas.map(f => parseFloat(f.frPct.toFixed(2)));
   const fasAcum   = filas.map(f => f.acumAbs);
